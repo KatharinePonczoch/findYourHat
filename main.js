@@ -68,14 +68,13 @@ class Field {
 
   //field representation
   print() {
-    //let resultStr = "";
     let resultArray = [];
     for (let row of this.field) {
       resultArray.push(row.join("") + "\n");
     }
     console.log(resultArray.join(""));
   }
-
+  // update Location value
   updateLocation(direction) {
     if (direction === "l") {
       this._columnLocation--;
@@ -86,28 +85,22 @@ class Field {
     } else if (direction === "d") {
       this._rowLocation++;
     }
-    //currentLocation = [this._rowLocation, this._columnLocation];
-
     return [this._rowLocation, this._columnLocation];
   }
 
   movePlayer(field) {
     let userInput = prompt(
-      "Enter a direction. Use l, r, u, d to move left, right, up, or down.  "
+      "\nEnter a direction. Use l, r, u, d to move left, right, up, or down.  "
     );
     let direction = userInput.toLowerCase();
-    //let currentLocation = [this._rowLocation, this._columnLocation];
 
     const nextMove = this.updateLocation(direction);
 
     if (!this.isValidMove(nextMove)) {
-      console.log("not valid");
       return "";
     } else if (this.checkForHole(nextMove)) {
-      //console.log("hole");
       return "";
     } else if (this.checkForHat(nextMove)) {
-      console.log("found it!");
       return "";
     } else {
       this.field[this._rowLocation][this._columnLocation] = pathCharacter;
@@ -118,20 +111,18 @@ class Field {
     if (
       this._rowLocation < 0 ||
       this._columnLocation < 0 ||
-      this._rowLocation > this._field.length ||
-      this._columnLocation > this._field[0].length
+      this._rowLocation >= this._field.length ||
+      this._columnLocation >= this._field[0].length
     ) {
       console.log("Out of bounds. You must stay in the field.");
       gameOver = true;
       return false;
     } else {
-      console.log("move is valid.");
       return true;
     }
   }
 
   checkForHole() {
-    console.log("INSIDE checkForHole ");
     let currentLocationValue =
       this.field[this._rowLocation][this._columnLocation];
 
@@ -140,20 +131,14 @@ class Field {
       gameOver = true;
       return true;
     } else {
-      console.log("no hole");
       return false;
     }
   }
 
   checkForHat() {
-    // console.log("INSIDE checkForHat: ", [
-    //   this._rowLocation,
-    //   this._columnLocation,
-    // ]);
-
     let currentLocationValue =
       this.field[this._rowLocation][this._columnLocation];
-    // console.log("current location value: ", currentLocationValue);
+
     if (currentLocationValue === "^") {
       console.log("You found the hat!");
       gameOver = true;
@@ -165,12 +150,15 @@ class Field {
   }
 
   static gameSetup() {
-    const height = prompt("select field height between 3-25:  ");
+    const height = prompt("select field height between 3-25 rows:  ");
 
-    const width = prompt("select field width between 3-25:  ");
+    const width = prompt("select field width between 3-25 columns:  ");
 
     const holePercent = prompt(
-      "What percent of the field should contain holes? (5-35):  "
+      "What percent of the field should contain holes? (enter whole # 10-35):  "
+    );
+    console.log(
+      "\nTry to find your hat:'^' without falling in a hole:'0'! \nYour path will be marked by '*'. \nPress 'crl+C' at any time to exit. \n "
     );
 
     return [height, width, holePercent];
@@ -180,24 +168,12 @@ class Field {
     while (!gameOver) {
       console.log(myField.print());
       this.movePlayer(this.field);
-
-      // if (!this.isValidMove()) {
-      //   break;
-      // }
-      // if (this.checkForHole()) {
-      //   break;
-      // }
-      // if (this.checkForHat()) {
-      //   break;
-      // }
-
-      // this.field[this._rowLocation][this._columnLocation] = pathCharacter;
     }
-    console.log("GAME OVER");
+    console.log("GAME OVER \n ");
   }
 }
 
-/////////////////////////////////////////////
+////////////////////////////end Field Class//////////
 
 //call game
 const [height, width, holePercent] = Field.gameSetup();
