@@ -5,30 +5,38 @@ const hole = "O";
 const fieldCharacter = "░";
 const pathCharacter = "*";
 
+let gameOver = false;
+
 class Field {
   constructor(field) {
     this._field = field; //  array of arrays
-    //this._row = 0;
-    //this._column = 0;
+    this._rowLocation = 0;
+    this._columnLocation = 0;
+    //start
+    this.field[this._rowLocation][this._columnLocation] = pathCharacter;
   }
+  //getters
   get field() {
     return this._field;
   }
-  get row() {
+  get rowLocation() {
     return this._row;
   }
-  get column() {
+  get columnLocation() {
     return this._column;
   }
-  set row(rowNum) {
-    this_row = rowNum;
+  get currentLocation() {
+    return [this._rowLocation][this._columnLocation];
   }
-  set column(columnNum) {
-    this_column = columnNum;
+  // setters
+  set rowLocation(rowNum) {
+    this._rowLocation = rowNum;
   }
-  //
+  set columnLocation(columnNum) {
+    this._columnLocation = columnNum;
+  }
+  //return randomized 2 dimensional array (include 1 hat)
   static generateField(height, width, holePercent) {
-    //return randomized 2 dimensional array (include 1 hat)
     const newFieldArray = [];
 
     for (let i = 0; i < height; i++) {
@@ -47,15 +55,17 @@ class Field {
         Math.floor(Math.random() * width)
       ] = hole;
     }
-    //in case starting position unsafe, assign field
-    newFieldArray[0][0] = fieldCharacter;
+
     // assign hat to random location, not starting position
     do {
       newFieldArray[Math.floor(Math.random() * height)][
         Math.floor(Math.random() * width)
       ] = hat;
     } while (newFieldArray[0][0] === hat);
+
+    return newFieldArray;
   }
+
   //field representation
   print() {
     //let resultStr = "";
@@ -65,119 +75,131 @@ class Field {
     }
     console.log(resultArray.join(""));
   }
+
+  updateLocation(direction) {
+    if (direction === "l") {
+      this._columnLocation--;
+    } else if (direction === "r") {
+      this._columnLocation++;
+    } else if (direction === "u") {
+      this._rowLocation--;
+    } else if (direction === "d") {
+      this._rowLocation++;
+    }
+    //currentLocation = [this._rowLocation, this._columnLocation];
+
+    return [this._rowLocation, this._columnLocation];
+  }
+
+  movePlayer(field) {
+    let userInput = prompt(
+      "Enter a direction. Use l, r, u, d to move left, right, up, or down.  "
+    );
+    let direction = userInput.toLowerCase();
+    //let currentLocation = [this._rowLocation, this._columnLocation];
+
+    const nextMove = this.updateLocation(direction);
+
+    if (!this.isValidMove(nextMove)) {
+      console.log("not valid");
+      return "";
+    } else if (this.checkForHole(nextMove)) {
+      //console.log("hole");
+      return "";
+    } else if (this.checkForHat(nextMove)) {
+      console.log("found it!");
+      return "";
+    } else {
+      this.field[this._rowLocation][this._columnLocation] = pathCharacter;
+    }
+  }
+
+  isValidMove() {
+    if (
+      this._rowLocation < 0 ||
+      this._columnLocation < 0 ||
+      this._rowLocation > this._field.length ||
+      this._columnLocation > this._field[0].length
+    ) {
+      console.log("Out of bounds. You must stay in the field.");
+      gameOver = true;
+      return false;
+    } else {
+      console.log("move is valid.");
+      return true;
+    }
+  }
+
+  checkForHole() {
+    console.log("INSIDE checkForHole ");
+    let currentLocationValue =
+      this.field[this._rowLocation][this._columnLocation];
+
+    if (currentLocationValue === hole) {
+      console.log("You fell in a hole.");
+      gameOver = true;
+      return true;
+    } else {
+      console.log("no hole");
+      return false;
+    }
+  }
+
+  checkForHat() {
+    // console.log("INSIDE checkForHat: ", [
+    //   this._rowLocation,
+    //   this._columnLocation,
+    // ]);
+
+    let currentLocationValue =
+      this.field[this._rowLocation][this._columnLocation];
+    // console.log("current location value: ", currentLocationValue);
+    if (currentLocationValue === "^") {
+      console.log("You found the hat!");
+      gameOver = true;
+      return true;
+    } else {
+      console.log("keep looking for the hat.");
+      return false;
+    }
+  }
+
+  static gameSetup() {
+    const height = prompt("select field height between 3-25:  ");
+
+    const width = prompt("select field width between 3-25:  ");
+
+    const holePercent = prompt(
+      "What percent of the field should contain holes? (5-35):  "
+    );
+
+    return [height, width, holePercent];
+  }
+
+  game() {
+    while (!gameOver) {
+      console.log(myField.print());
+      this.movePlayer(this.field);
+
+      // if (!this.isValidMove()) {
+      //   break;
+      // }
+      // if (this.checkForHole()) {
+      //   break;
+      // }
+      // if (this.checkForHat()) {
+      //   break;
+      // }
+
+      // this.field[this._rowLocation][this._columnLocation] = pathCharacter;
+    }
+    console.log("GAME OVER");
+  }
 }
 
-// set starting position, start of game
-let gameOver = false;
-let currentLocation = [0, 0];
-let rowNum = currentLocation[0];
-let columnNum = currentLocation[1];
+/////////////////////////////////////////////
 
-const printUpdatedField = () => {
-  //
-};
-
-const updateLocation = (currentLocation, direction) => {
-  if (direction === "l") {
-    columnNum--;
-  } else if (direction === "r") {
-    columnNum++;
-  } else if (direction === "u") {
-    rowNum--;
-  } else if (direction === "d") {
-    rowNum++;
-  }
-  console.log("New currentLocation fr. update location function:  ", [
-    rowNum,
-    columnNum,
-  ]);
-  [[rowNum][columnNum]] = "*";
-  currentLocation = [rowNum, columnNum];
-  return currentLocation;
-  //return [rowNum, columnNum];
-};
-
-const isValidMove = (field, currentLocation, direction) => {
-  if (
-    rowNum < 0 ||
-    columnNum < 0 ||
-    rowNum > 20 ||
-    columnNum > 15
-    // rowNum > field.length ||
-    // columnNum > field[0].length
-  ) {
-    console.log("Out of bounds. You must stay in the field.");
-    return false;
-  } else if (field[[rowNum][columnNum]] === "O") {
-    console.log("You fell in a hole.");
-    return false;
-  } else {
-    console.log("move is valid.");
-    return true;
-  }
-  //check if next move is on board
-  //check if hole O
-};
-
-const checkForHat = () => {
-  //check if found hat ^
-};
-
-const movePlayer = (direction, field) => {
-  direction = direction.toLowerCase();
-  const nextMove = updateLocation(currentLocation, direction);
-  console.log("direction: ", direction);
-  if (direction === "l" && isValidMove(field, nextMove, direction)) {
-    currentLocation = nextMove;
-    //fieldsArray[rowNum][columnNum] = "*";
-    console.log(field);
-    console.log("moved left!");
-  } else if (direction === "r" && isValidMove(field, nextMove, direction)) {
-    currentLocation = nextMove;
-    console.log(currentLocation[1]);
-    // console.log("row: ", rowNum);
-    // console.log("column: ", columnNum);
-    //fieldsArray[rowNum][columnNum] = "*";
-    //console.log(field);
-    console.log("moved right!");
-  } else if (direction === "u" && isValidMove(field, nextMove, direction)) {
-    console.log("moved up");
-  } else if (direction === "d" && isValidMove(field, nextMove, direction)) {
-    console.log("moved down");
-  } else {
-    console.log("you must enter l, r, u, or d.  ");
-  }
-};
-const myField = new Field([
-  ["*", "░", "O"],
-  ["░", "O", "░"],
-  ["░", "^", "░"],
-]);
-
-//console.log('test');
-myField.print();
-
-let userInput = prompt(
-  "Enter a direction. Use l, r, u, d to move left, right, up, or down.  "
-);
-
-movePlayer(userInput, [
-  ["*", "░", "O"],
-  ["░", "O", "░"],
-  ["░", "^", "░"],
-]);
-
-// function game() {
-//   while (!gameOver) {
-//     console.log(myField.print());
-//     let userInput = prompt(
-//       "Enter a direction. Use l, r, u, d to move left, right, up, or down.  "
-//     );
-//     movePlayer(userInput, [
-//       ["*", "░", "O"],
-//       ["░", "O", "░"],
-//       ["░", "^", "░"],
-//     ]);
-//   }
-// }
-// game();
+//call game
+const [height, width, holePercent] = Field.gameSetup();
+const myField = new Field(Field.generateField(height, width, holePercent));
+myField.game();
