@@ -1,8 +1,12 @@
-"Find Your Hat Project" on Codecademy (Javascript)
+*"Find Your Hat Project" on Codecademy (Javascript)*
+**run in node**
 
-instructions:
+**added features:**
+Player can select width and height of field. Player can also select what percent of the field will be covered in holes.
 
-In this project, you’ll be building an interactive terminal game. The scenario is that the player has lost their hat in a field full of holes, and they must navigate back to it without falling down one of the holes or stepping outside of the field.
+**project instructions from codecademy:**
+
+1. In this project, you’ll be building an interactive terminal game. The scenario is that the player has lost their hat in a field full of holes, and they must navigate back to it without falling down one of the holes or stepping outside of the field.
 
 2. Your project is centered on a Field class. This and the following tasks will describe how the class should function at a high level, and it will be up to you to figure out the implementation in code. As you go, test your code by creating instances of the class and calling its methods.
 
@@ -28,7 +32,10 @@ When any of the above occur, let the user know and end the game.
 This method should at least take arguments for height and width of the field, and it should return a randomized two-dimensional array representing the field with a hat and one or more holes. In our solution, we added a third percentage argument used to determine what percent of the field should be covered in holes.
 
 
-----
+
 forum discussion: https://discuss.codecademy.com/t/find-your-hat-challenge-project-javascript/462380?_gl=1*xjw98z*_ga*MDk0MTkyMTI4Mi4xNjYxMjE4Mzky*_ga_3LRZM6TM9L*MTY3MzM4NjA2OS4yNTkuMS4xNjczMzg2MjQ4LjQ2LjAuMA..
 
 https://www.codecademy.com/paths/readytrack-jul22/tracks/fecp-22-javascript-syntax-part-iii-beb50b46-8128-47d5-8236-dafdc9aa29bd/modules/wdcp-22-find-your-hat-943109bb-2335-46ce-91ae-8fb4135fcee1/projects/find-your-hat
+
+
+***Received help from peer mentor Shaquon Kelley***
